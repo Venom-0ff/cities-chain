@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CitiesChainClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        WindowStyle="None">
     <Border CornerRadius="12">
         <Border.Background>
             <ImageBrush ImageSource="/img/maxresdefault.jpg"
-                        Stretch="None"/>
+                        Stretch="UniformToFill"/>
         </Border.Background>
         <Border CornerRadius="10"                    
             BorderThickness="2"
@@ -137,7 +138,7 @@
                              FontSize="13"
                              FontWeight="Medium"
                              FontFamily="Montserrat"                            
-                             Foreground="White"
+                             Foreground="Black"
                              CaretBrush="LightGray"
                              BorderBrush="DarkGray"
                              BorderThickness="0,0,0,2"
