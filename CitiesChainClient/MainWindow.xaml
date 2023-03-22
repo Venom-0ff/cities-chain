@@ -120,7 +120,7 @@
                                FontWeight="Medium"
                                FontFamily="Montserrat"
                                HorizontalAlignment="Center"/>
-                    <TextBlock Text="1 - 8 PLAYERS"
+                    <TextBlock Text="2 - 8 PLAYERS"
                                Foreground="LightGray"
                                FontSize="12"
                                FontWeight="Medium"
