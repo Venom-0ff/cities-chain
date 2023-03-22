@@ -39,5 +39,10 @@ namespace CitiesChainClient
         {
             Environment.Exit(0);
         }
+
+        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
     }
 }

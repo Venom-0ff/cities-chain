@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CitiesChainClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="450" Width="800" MinWidth="400" MinHeight="420"
         WindowStyle="None">
     <Border CornerRadius="12">
         <Border.Background>
@@ -14,7 +14,7 @@
         </Border.Background>
         <Border CornerRadius="10"                    
             BorderThickness="2"
-            Opacity="0.95">
+            Opacity="0.95" MouseLeftButtonDown="Border_MouseLeftButtonDown">
             <Border.BorderBrush>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                     <GradientStop Color="#462AD8" Offset="0"/>
