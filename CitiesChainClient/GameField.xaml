@@ -113,6 +113,7 @@
                             Margin="0,35,0,0">
                     <ListBox HorizontalAlignment="Center" Height="347" Width="770" />
                 </StackPanel>
+                <TextBox x:Name="TimerTextField" HorizontalAlignment="Left" Margin="662,2,0,0" Grid.Row="1" TextWrapping="Wrap" Text="20:00" VerticalAlignment="Top" Width="120" Height="28" TextAlignment="Center" FontSize="20" IsReadOnly="True"/>
             </Grid>
         </Border>
 
