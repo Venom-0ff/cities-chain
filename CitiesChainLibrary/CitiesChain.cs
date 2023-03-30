@@ -18,6 +18,17 @@ namespace CitiesChainLibrary
     }
 
     /// <summary>
+    /// A data contract.
+    /// </summary>
+    //public interface IData
+    //{
+    //    [DataContractFormat]
+    //    string GetAllPlayerData(string[] playerData);
+    //    [DataContractFormat]
+    //    void SendAllData(string[] data);
+    //}
+
+    /// <summary>
     /// A service contract.
     /// </summary>
     [ServiceContract(CallbackContract = typeof(ICallback))]
@@ -97,6 +108,21 @@ namespace CitiesChainLibrary
 
             return false;
         }
+
+        //public string GetAllPlayerData(string[] players)
+        //{
+            
+        //}
+
+        //public string GetAllWordData(string[] words)
+        //{
+
+        //}
+
+        //public void SendAllData(string[] data)
+        //{
+            
+        //}
 
         /// <summary>
         /// Updates the displays of all players.
