@@ -14,7 +14,7 @@ namespace CitiesChainLibrary
     public interface ICallback
     {
         [OperationContract(IsOneWay = true)]
-        void SendAllMessages(string[] messages);
+        void SendAllMessages(string messages);
     }
 
     /// <summary>
@@ -42,12 +42,7 @@ namespace CitiesChainLibrary
     {
         private readonly string[] cities_data = File.ReadAllLines("../../../CitiesNames.csv");
         private readonly Dictionary<string, ICallback> players = new Dictionary<string, ICallback>();
-        private readonly List<string> playedCities;
-
-        public CitiesChain()
-        {
-            playedCities = new List<string>();
-        }
+        private string lastPlayedCity;
 
         /// <summary>
         /// Stores unique username and subscribes the user's client to the callbacks.
@@ -88,9 +83,9 @@ namespace CitiesChainLibrary
         {
             if (cities_data.Contains(city))
             {
-                if (playedCities.Count == 0 || playedCities.Last().Last().Equals(city.ToLower().First()))
+                if (lastPlayedCity.Last().Equals(city.ToLower().First()))
                 {
-                    playedCities.Add(city);
+                    lastPlayedCity = city;
                     return true;
                 }
             }
@@ -103,9 +98,8 @@ namespace CitiesChainLibrary
         /// </summary>
         private void UpdateAllUsers()
         {
-            string[] msgs = playedCities.ToArray<string>();
             foreach (ICallback c in players.Values)
-                c.SendAllMessages(msgs);
+                c.SendAllMessages(lastPlayedCity);
         }
     }
 }
