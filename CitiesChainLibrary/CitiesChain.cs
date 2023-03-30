@@ -14,7 +14,7 @@ namespace CitiesChainLibrary
     public interface ICallback
     {
         [OperationContract(IsOneWay = true)]
-        void SendAllMessages(string messages);
+        void SendAllMessages(string message);
     }
 
     /// <summary>
@@ -24,13 +24,15 @@ namespace CitiesChainLibrary
     public interface ICitiesChain
     {
         [OperationContract]
-        bool Join(string name);
+        bool Join(Player player);
         [OperationContract(IsOneWay = true)]
         void Leave(string name);
         [OperationContract]
         bool MakeATurn(string city);
         [OperationContract]
-        string[] GetAllMessages();
+        void PostMessage(string msg);
+        [OperationContract]
+        string GetMessage();
     }
 
     /// <summary>
@@ -38,26 +40,27 @@ namespace CitiesChainLibrary
     /// </summary>
     //[ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class CitiesChain
+    public class CitiesChain : ICitiesChain
     {
         public static List<Player> playerList = new List<Player>();
         private readonly string[] cities_data = File.ReadAllLines("../../../CitiesNames.csv");
-        private readonly Dictionary<string, ICallback> players = new Dictionary<string, ICallback>();
+        private readonly Dictionary<Player, ICallback> players = new Dictionary<Player, ICallback>();
         private string lastPlayedCity;
+
 
         /// <summary>
         /// Stores unique username and subscribes the user's client to the callbacks.
         /// </summary>
         /// <param name="name">Username to add.</param>
         /// <returns><c>true</c> if the player successfully joins the game, <c>false</c> otherwise.</returns>
-        public bool Join(string name)
+        public bool Join(Player player)
         {
-            if (players.ContainsKey(name.ToLower()))
+            if (players.ContainsKey(player))
                 return false;
             else
             {
                 ICallback callback = OperationContext.Current.GetCallbackChannel<ICallback>();
-                players.Add(name.ToLower(), callback);
+                players.Add(player, callback);
 
                 return true;
             }
@@ -69,9 +72,9 @@ namespace CitiesChainLibrary
         /// <param name="name">Username to remove.</param>
         public void Leave(string name)
         {
-            if (players.ContainsKey(name.ToLower()))
+            if (players.Keys.Any(key => key.Name == name))
             {
-                players.Remove(name.ToLower());
+                players.Remove(players.Keys.First(key => key.Name == name));
             }
         }
 
@@ -87,21 +90,40 @@ namespace CitiesChainLibrary
                 if (lastPlayedCity.Last().Equals(city.ToLower().First()))
                 {
                     lastPlayedCity = city;
+                    UpdateAllUsers(city);
                     return true;
                 }
-                UpdateAllUsers();
             }
 
             return false;
         }
 
         /// <summary>
+        /// Posts a general message to all users.
+        /// </summary>
+        /// <param name="msg">Message to post</param>
+        /// <returns></returns>
+        public void PostMessage(string msg)
+        {
+            UpdateAllUsers(msg);
+        }
+
+        /// <summary>
+        /// Returns the last posted message.
+        /// </summary>
+        /// <returns>The last posted message.</returns>
+        public string GetMessage()
+        {
+            return lastPlayedCity;
+        }
+
+        /// <summary>
         /// Updates the displays of all players.
         /// </summary>
-        private void UpdateAllUsers()
+        private void UpdateAllUsers(string msg)
         {
             foreach (ICallback c in players.Values)
-                c.SendAllMessages(lastPlayedCity);
+                c.SendAllMessages(msg);
         }
     }
 }
