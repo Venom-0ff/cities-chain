@@ -20,6 +20,8 @@ namespace CitiesChainClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        int userID = 1;
+        public static Dictionary<int, string> users = new Dictionary<int, string>();
         public MainWindow()
         {
             InitializeComponent();
@@ -32,7 +34,18 @@ namespace CitiesChainClient
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-
+            if (txtUser.Text == "")
+            {
+                txtUser.Text = "Wrong name";
+            }
+            else
+            {
+                users.Add(userID, txtUser.Text);
+                GameField game = new GameField(userID);
+                Hide();
+                userID++;
+                game.Show();
+            }
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
