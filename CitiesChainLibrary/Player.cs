@@ -14,9 +14,9 @@ namespace CitiesChainLibrary
     public class Player
     {
         [DataMember]
-        public string Name { get; }
+        public string Name { get; set; }
         [DataMember]
-        public int PlayerId { get; }
+        public int PlayerId { get; set; }
         [DataMember]
         public string Answer { get; set; }
         [DataMember]
