@@ -29,8 +29,6 @@ namespace CitiesChainLibrary
         void Leave(string name);
         [OperationContract]
         bool MakeATurn(string city);
-        [OperationContract]
-        string[] GetAllMessages();
     }
 
     /// <summary>
@@ -38,7 +36,7 @@ namespace CitiesChainLibrary
     /// </summary>
     //[ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class CitiesChain
+    public class CitiesChain : ICitiesChain
     {
         public static List<Player> playerList = new List<Player>();
         private readonly string[] cities_data = File.ReadAllLines("../../../CitiesNames.csv");

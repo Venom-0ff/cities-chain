@@ -12,14 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using CitiesChainLibrary;
+using System.ServiceModel;
 
 namespace CitiesChainClient
 {
     /// <summary>
     /// Interaction logic for GameField.xaml
     /// </summary>
-    public partial class GameField : Window
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, UseSynchronizationContext = false)]
+    public partial class GameField : Window, ICallback
     {
+        private ICitiesChain icc = null;
         public int userID;
         public string userName = "";
         private int dontbreak = 9999;
@@ -29,16 +32,42 @@ namespace CitiesChainClient
             userID = id;
             foreach (Player player in CitiesChain.playerList)
             {
-                if(player.PlayerId == id)
+                if (player.PlayerId == id)
                 {
                     userName = player.Name;
                     break;
                 }
             }
+
+            try
+            {
+                // Configure the ABCs of using the CitiesChain service
+                DuplexChannelFactory<ICitiesChain> channel = new DuplexChannelFactory<ICitiesChain>(this, "CitiesChainService");
+
+                // Activate a CitiesChain object
+                icc = channel.CreateChannel();
+
+                if (icc.Join(userName))
+                {
+                    GameField_RTB.AppendText($"\n{userName} joined the game!");
+                }
+                else
+                {
+                    // Alias rejected by the service so nullify service proxies
+                    icc = null;
+                    MessageBox.Show("ERROR: Alias in use. Please try again.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
+            icc.Leave(userName);
+            GameField_RTB.AppendText($"\n{userName} left the game!");
             Environment.Exit(0);
         }
 
@@ -68,7 +97,19 @@ namespace CitiesChainClient
                         await Task.Delay(1000);
                     }
                 }
+                else
+                {
+                    icc.MakeATurn(comand);
+                }
             }
+        }
+
+        // Implements the callback logic that will be triggered by a callback event in the service
+        private delegate void GuiUpdateDelegate(string[] messages);
+
+        public void SendAllMessages(string lastPlayedCity)
+        {
+            GameField_RTB.AppendText(lastPlayedCity);
         }
     }
 }
