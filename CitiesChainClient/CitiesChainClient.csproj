@@ -101,7 +101,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\CitiesChainLibrary\CitiesChainLibrary.csproj">
+      <Project>{b4709e08-c388-4da0-9612-86f565da248e}</Project>
+      <Name>CitiesChainLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="img\logo.png" />
   </ItemGroup>

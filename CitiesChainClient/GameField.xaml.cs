@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using CitiesChainLibrary;
 
 namespace CitiesChainClient
 {
@@ -20,10 +21,20 @@ namespace CitiesChainClient
     public partial class GameField : Window
     {
         public int userID;
+        public string userName = "";
+        private int dontbreak = 9999;
         public GameField(int id)
         {
             InitializeComponent();
             userID = id;
+            foreach (Player player in CitiesChain.playerList)
+            {
+                if(player.PlayerId == id)
+                {
+                    userName = player.Name;
+                    break;
+                }
+            }
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -43,15 +54,15 @@ namespace CitiesChainClient
 
         private async void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e.Key == Key.Enter && userID == 1)
             {
-                MainWindow.users.TryGetValue(userID, out var tmp);
                 string comand = ChatTextField.Text;
-                GameField_RTB.AppendText($"\n{tmp}: {ChatTextField.Text}");
+                GameField_RTB.AppendText($"\n{userName}: {ChatTextField.Text}");
                 ChatTextField.Text = "";
-                if (comand == "/start")
+                if (comand == "/start" && dontbreak == 9999)
                 {
-                    for (int i = 5; i > 0; i--)
+                    dontbreak = 0;
+                    for (int i = 3; i > 0; i--)
                     {
                         GameField_RTB.AppendText($"\nThe game will start in {i}");
                         await Task.Delay(1000);

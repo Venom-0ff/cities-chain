@@ -40,6 +40,7 @@ namespace CitiesChainLibrary
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class CitiesChain
     {
+        public static List<Player> playerList = new List<Player>();
         private readonly string[] cities_data = File.ReadAllLines("../../../CitiesNames.csv");
         private readonly Dictionary<string, ICallback> players = new Dictionary<string, ICallback>();
         private string lastPlayedCity;

@@ -1,18 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
+using CitiesChainLibrary;
 namespace CitiesChainClient
 {
     /// <summary>
@@ -20,8 +10,8 @@ namespace CitiesChainClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        Player player;
         int userID = 1;
-        public static Dictionary<int, string> users = new Dictionary<int, string>();
         public MainWindow()
         {
             InitializeComponent();
@@ -40,7 +30,7 @@ namespace CitiesChainClient
             }
             else
             {
-                users.Add(userID, txtUser.Text);
+                player = new Player(userID, txtUser.Text);
                 GameField game = new GameField(userID);
                 Hide();
                 userID++;
