@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CitiesChainLibrary;
+using System;
 using System.Windows;
 using System.Windows.Input;
-using CitiesChainLibrary;
 
 namespace CitiesChainClient
 {
@@ -12,7 +11,7 @@ namespace CitiesChainClient
     public partial class MainWindow : Window
     {
         Player player;
-        int userID = 1;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -27,14 +26,13 @@ namespace CitiesChainClient
         {
             if (txtUser.Text == "")
             {
-                txtUser.Text = "Wrong name";
+                MessageBox.Show("Wrong name");
             }
             else
             {
-                player = new Player(userID, txtUser.Text);
-                GameField game = new GameField(userID);
+                player = new Player(txtUser.Text);
+                GameField game = new GameField(player);
                 Hide();
-                userID++;
                 game.Show();
             }
         }
