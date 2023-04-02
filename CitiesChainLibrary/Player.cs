@@ -1,9 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace CitiesChainLibrary
 {
@@ -23,12 +18,9 @@ namespace CitiesChainLibrary
         public bool IsPlaying { get; set; }
         [DataMember]
         public bool IsHost { get; set; }
-        public Player(int Id, string Name)
+        public Player(string Name)
         {
             this.Name = Name;
-            this.PlayerId = Id;
-            CitiesChain.playerList.Add(this);
         }
-
     }
 }

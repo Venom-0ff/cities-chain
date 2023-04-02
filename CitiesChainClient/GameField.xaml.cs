@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CitiesChainLibrary;
+using System;
 using System.Linq;
-using System.Text;
+using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using CitiesChainLibrary;
-using System.ServiceModel;
 
 namespace CitiesChainClient
 {
@@ -26,42 +18,41 @@ namespace CitiesChainClient
         public int userID;
         public string userName = "";
         private int dontbreak = 9999;
-        public GameField(int id)
+
+        public GameField(Player player)
         {
             InitializeComponent();
-            userID = id;
-            foreach (Player player in CitiesChain.playerList)
+
+            try
             {
-                if (player.PlayerId == id)
+                userName = player.Name;
+
+                // Configure the ABCs of using the CitiesChain service
+                DuplexChannelFactory<ICitiesChain> channel = new DuplexChannelFactory<ICitiesChain>(this, "CitiesChainService");
+
+                // Activate a CitiesChain object
+                icc = channel.CreateChannel();
+
+                if (icc.Join(player))
                 {
-                    try
-                    {
-                        userName = player.Name;
+                    userID = icc.GetPlayerId(player);
+                    icc.PostMessage($"\n{userName} joined the game!");
 
-                        // Configure the ABCs of using the CitiesChain service
-                        DuplexChannelFactory<ICitiesChain> channel = new DuplexChannelFactory<ICitiesChain>(this, "CitiesChainService");
-
-                        // Activate a CitiesChain object
-                        icc = channel.CreateChannel();
-
-                        if (icc.Join(player))
-                        {
-                            icc.PostMessage($"\n{userName} joined the game!");
-                            icc.GetMessage();
-                        }
-                        else
-                        {
-                            // Alias rejected by the service so nullify service proxies
-                            icc = null;
-                            MessageBox.Show("ERROR: Alias in use. Please try again.");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                    break;
+                    if (userID == 0)
+                        GameField_RTB.AppendText("\nYou're the game host!");
+                    else
+                        GameField_RTB.AppendText($"\n{icc.GetHostName()} is the game host!");
                 }
+                else
+                {
+                    // Name rejected by the service so nullify service proxies
+                    icc = null;
+                    MessageBox.Show("ERROR: Name is already in use. Please try again.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -84,23 +75,49 @@ namespace CitiesChainClient
 
         private async void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && userID == 1)
+            if (e.Key == Key.Enter)
             {
                 string comand = ChatTextField.Text;
-                icc.PostMessage($"\n{userName}: {ChatTextField.Text}");
-                ChatTextField.Text = "";
-                if (comand == "/start" && dontbreak == 9999)
+
+                if (comand == "/start" && userID == 0 && dontbreak == 9999)
                 {
+                    icc.PostMessage($"\n{userName}: {ChatTextField.Text}");
+                    ChatTextField.Text = "";
                     dontbreak = 0;
                     for (int i = 3; i > 0; i--)
                     {
                         icc.PostMessage($"\nThe game will start in {i}");
                         await Task.Delay(1000);
                     }
+                    GameField_RTB.Document.Blocks.Clear();
+                    icc.PostMessage("The game has started! Every message from now on will be treated as an answer.");
+                    return;
+                }
+
+                if (comand == "/start" && userID != 0 && dontbreak == 9999)
+                {
+                    GameField_RTB.AppendText("\nOnly host can start the game!");
+                    ChatTextField.Text = "";
+                    return;
+                }
+                
+                if (dontbreak != 9999)
+                {
+                    if (icc.MakeATurn(comand))
+                    {
+                        icc.PostMessage($"\n{userName}'s answer '{comand}' was accepted!\nNext player has to name a city that starts with '{comand.First()}'.");
+                        ChatTextField.Text = "";
+                    }
+                    else
+                    {
+                        icc.PostMessage($"\n{userName}'s answer '{comand}' was not accepted and they're out of the game!");
+                        ChatTextField.Text = "";
+                    }
                 }
                 else
                 {
-                    icc.MakeATurn(comand);
+                    icc.PostMessage($"\n{userName}: {ChatTextField.Text}");
+                    ChatTextField.Text = "";
                 }
             }
         }

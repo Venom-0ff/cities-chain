@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ServiceModel;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.ServiceModel;
 
 namespace CitiesChainLibrary
 {
@@ -32,21 +29,21 @@ namespace CitiesChainLibrary
         [OperationContract]
         void PostMessage(string msg);
         [OperationContract]
-        string GetMessage();
+        int GetPlayerId(Player player);
+        [OperationContract]
+        string GetHostName();
     }
 
     /// <summary>
     /// Defines the CitiesChain game logic.
     /// </summary>
-    //[ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class CitiesChain : ICitiesChain
     {
-        public static List<Player> playerList = new List<Player>();
         private readonly string[] cities_data = File.ReadAllLines("../../../CitiesNames.csv");
         private readonly Dictionary<Player, ICallback> players = new Dictionary<Player, ICallback>();
-        private string lastPlayedCity;
-
+        private string lastPlayedCity = "";
+        private int Id = 0;
 
         /// <summary>
         /// Stores unique username and subscribes the user's client to the callbacks.
@@ -59,6 +56,7 @@ namespace CitiesChainLibrary
                 return false;
             else
             {
+                player.PlayerId = Id++;
                 ICallback callback = OperationContext.Current.GetCallbackChannel<ICallback>();
                 players.Add(player, callback);
 
@@ -87,10 +85,9 @@ namespace CitiesChainLibrary
         {
             if (cities_data.Contains(city))
             {
-                if (lastPlayedCity.Last().Equals(city.ToLower().First()))
+                if (lastPlayedCity.Length == 0 || !city.ToLower().Equals(lastPlayedCity.ToLower()) && lastPlayedCity.Last().Equals(city.ToLower().First()))
                 {
                     lastPlayedCity = city;
-                    UpdateAllUsers(city);
                     return true;
                 }
             }
@@ -109,12 +106,22 @@ namespace CitiesChainLibrary
         }
 
         /// <summary>
-        /// Returns the last posted message.
+        /// Returns the Server-assigned id of the specified player.
         /// </summary>
-        /// <returns>The last posted message.</returns>
-        public string GetMessage()
+        /// <param name="player">Player object to get id of.</param>
+        /// <returns>Id of the specified player.</returns>
+        public int GetPlayerId(Player player)
         {
-            return lastPlayedCity;
+            return players.Keys.First(p => p.Name == player.Name).PlayerId;
+        }
+
+        /// <summary>
+        /// Returns the name of the current game's host.
+        /// </summary>
+        /// <returns>The name of the host.</returns>
+        public string GetHostName()
+        {
+            return players.Keys.First().Name;
         }
 
         /// <summary>
