@@ -34,6 +34,10 @@ namespace CitiesChainLibrary
         string GetHostName();
         [OperationContract]
         int GetPlayersCount();
+        [OperationContract]
+        void SetDontBreak();
+        [OperationContract]
+        bool GetDontBreak();
     }
 
     /// <summary>
@@ -46,7 +50,7 @@ namespace CitiesChainLibrary
         private readonly Dictionary<Player, ICallback> players = new Dictionary<Player, ICallback>();
         private string lastPlayedCity = "";
         private int Id = 0;
-
+        private bool dontbreak = true;
         /// <summary>
         /// Stores unique username and subscribes the user's client to the callbacks.
         /// </summary>
@@ -142,6 +146,23 @@ namespace CitiesChainLibrary
         {
             foreach (ICallback c in players.Values)
                 c.SendAllMessages(msg);
+        }
+
+        /// <summary>
+        /// Sets dontbreak server variable to false.
+        /// </summary>
+        public void SetDontBreak()
+        {
+            dontbreak = false;
+        }
+
+        /// <summary>
+        /// Get dontbreak server variable.
+        /// </summary>
+        /// <returns><c>dontbreak</c> server variable.</returns>
+        public bool GetDontBreak()
+        {
+            return dontbreak;
         }
     }
 }
