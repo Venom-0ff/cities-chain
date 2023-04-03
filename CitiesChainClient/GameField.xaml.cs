@@ -18,8 +18,6 @@ namespace CitiesChainClient
     public partial class GameField : Window, ICallback
     {
         private ICitiesChain icc = null;
-        public DispatcherTimer timer;
-        public int timerValue = 20;
         public int userID;
         public string userName = "";
         private bool hosttrue = false;
@@ -101,6 +99,7 @@ namespace CitiesChainClient
                             await Task.Delay(1000);
                         }
                         icc.PostMessage("\nThe game has started!\nEvery message from now on will be treated as an answer.");
+                        timer.Start();
                         return;
                     }
                     else
@@ -122,6 +121,7 @@ namespace CitiesChainClient
                 {
                     if (icc.MakeATurn(command))
                     {
+                        //UpdateTimer();
                         string temp = command.Last() + "";
                         icc.PostMessage($"\n{userID + " " + userName}'s answer '{command}' was accepted!\nNext player has to name a city that starts with '{temp.ToUpper()}'.");
                         ChatTextField.Text = "";
@@ -145,23 +145,9 @@ namespace CitiesChainClient
             }
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            if (timerValue == 0)
-            {
-                timer.Stop();
-                TimerTextField.Text = "Time is over";
-                return;
-            }
+        
 
-            timerValue--;
-            TimerTextField.Text = timerValue.ToString();
-        }
-
-        private void UpdateTimer(object sender, EventArgs e)
-        {
-            this.timerValue = 20;
-        }
+        
 
         // Implements the callback logic that will be triggered by a callback event in the service
         private delegate void GuiUpdateDelegate(string message);

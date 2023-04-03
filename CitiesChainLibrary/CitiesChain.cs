@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
+using System.Windows.Threading;
 
 namespace CitiesChainLibrary
 {
@@ -44,6 +45,8 @@ namespace CitiesChainLibrary
         void SetCurrentPlayer();
         [OperationContract]
         void ResetPlayerTurn();
+        [OperationContract]
+        int ResetTimer();
     }
 
     /// <summary>
@@ -58,6 +61,10 @@ namespace CitiesChainLibrary
         private int Id = 0;
         private bool dontbreak = true;
         private int currentPlayer = 0;
+        private DispatcherTimer timer;
+        private int timerValue = 20;
+
+
 
         /// <summary>
         /// Stores unique username and subscribes the user's client to the callbacks.
@@ -196,6 +203,31 @@ namespace CitiesChainLibrary
         public void ResetPlayerTurn()
         {
             currentPlayer = 0;
+        }
+
+        /// <summary>
+        /// Resets the timer
+        /// </summary>
+        public int ResetTimer()
+        {
+            return timerValue;
+        }
+
+        /// <summary>
+        /// Proceed timer
+        /// </summary>
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            if (timerValue == 0)
+            {
+                timer.Stop();
+                //MessageBox.Show("You lost");
+                timer.Start();
+                return;
+            }
+
+            timerValue--;
+            TimerTextField.Text = timerValue.ToString();
         }
     }
 }
