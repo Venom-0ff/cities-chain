@@ -24,9 +24,7 @@ namespace CitiesChainClient
         public GameField(Player player)
         {
             InitializeComponent();
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(1);
-            timer.Tick += Timer_Tick;
+            
 
             try
             {
@@ -82,6 +80,11 @@ namespace CitiesChainClient
 
         private async void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
+            if (icc.isLoser(userID))
+            {
+                MessageBox.Show("You are out of the game");
+                return;
+            }
             if (e.Key == Key.Enter && userID == icc.GetCurrentPlayer())
             {
                 string command = ChatTextField.Text;
@@ -99,13 +102,14 @@ namespace CitiesChainClient
                             await Task.Delay(1000);
                         }
                         icc.PostMessage("\nThe game has started!\nEvery message from now on will be treated as an answer.");
-                        timer.Start();
+                        GameField_RTB.ScrollToEnd();
                         return;
                     }
                     else
                     {
                         ChatTextField.Text = "";
                         GameField_RTB.AppendText("\nCan't start the game: not enough players.");
+                        GameField_RTB.ScrollToEnd();
                         return;
                     }
                 }
@@ -113,6 +117,8 @@ namespace CitiesChainClient
                 if (command == "/start" && !hosttrue && !icc.GetDontBreak())
                 {
                     GameField_RTB.AppendText("\nOnly host can start the game.");
+                    GameField_RTB.ScrollToEnd();
+                    GameField_RTB.ScrollToEnd();
                     ChatTextField.Text = "";
                     return;
                 }
@@ -124,6 +130,7 @@ namespace CitiesChainClient
                         //UpdateTimer();
                         string temp = command.Last() + "";
                         icc.PostMessage($"\n{userID + " " + userName}'s answer '{command}' was accepted!\nNext player has to name a city that starts with '{temp.ToUpper()}'.");
+                        GameField_RTB.ScrollToEnd();
                         ChatTextField.Text = "";
                         icc.SetCurrentPlayer();
                         if(userID >= icc.GetPlayersCount()-1)
@@ -134,12 +141,15 @@ namespace CitiesChainClient
                     else
                     {
                         icc.PostMessage($"\n{userID + " " + userName}'s answer '{command}' was not accepted and they're out of the game!");
+                        GameField_RTB.ScrollToEnd();
                         ChatTextField.Text = "";
+                        icc.GameOver(userID);
                     }
                 }
                 else
                 {
                     icc.PostMessage($"\n{userID + " " + userName}: {ChatTextField.Text}");
+                    GameField_RTB.ScrollToEnd();
                     ChatTextField.Text = "";
                 }
             }
