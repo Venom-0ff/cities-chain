@@ -5,9 +5,6 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Timers;
-using System.Windows.Documents;
-using System.Windows.Threading;
 
 namespace CitiesChainClient
 {
@@ -21,11 +18,10 @@ namespace CitiesChainClient
         public int userID;
         public string userName = "";
         private bool hosttrue = false;
+
         public GameField(Player player)
         {
             InitializeComponent();
-            
-
             try
             {
                 userName = player.Name;
@@ -93,7 +89,7 @@ namespace CitiesChainClient
                 {
                     if (icc.GetPlayersCount() >= 2)
                     {
-                        icc.PostMessage($"\n{userID + " " + userName}: {ChatTextField.Text}");
+                        icc.PostMessage($"\n{userName}: {ChatTextField.Text}");
                         ChatTextField.Text = "";
                         icc.SetDontBreak();
                         for (int i = 3; i > 0; i--)
@@ -127,7 +123,6 @@ namespace CitiesChainClient
                 {
                     if (icc.MakeATurn(command))
                     {
-                        //UpdateTimer();
                         string temp = command.Last() + "";
                         icc.PostMessage($"\n{userID + " " + userName}'s answer '{command}' was accepted!\nNext player has to name a city that starts with '{temp.ToUpper()}'.");
                         GameField_RTB.ScrollToEnd();
@@ -154,9 +149,6 @@ namespace CitiesChainClient
                 }
             }
         }
-
-        
-
         
 
         // Implements the callback logic that will be triggered by a callback event in the service

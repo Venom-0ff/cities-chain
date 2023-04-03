@@ -205,11 +205,20 @@ namespace CitiesChainLibrary
             currentPlayer = 0;
         }
 
+        /// <summary>
+        /// Adds a player who lost to the 'losers' list.
+        /// </summary>
+        /// <param name="userId"></param>
         public void GameOver(int userId)
         {
             outplayers.Add(userId);
         }
 
+        /// <summary>
+        /// Checks if the player is loser.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>True if the player is out of the game, false otherwise.</returns>
         public bool isLoser(int userId)
         {
             if (outplayers.Contains(userId))
