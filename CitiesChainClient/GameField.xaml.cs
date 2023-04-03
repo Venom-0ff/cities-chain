@@ -36,12 +36,12 @@ namespace CitiesChainClient
                 if (icc.Join(player))
                 {
                     userID = icc.GetPlayerId(player);
-                    icc.PostMessage($"\n{userName} joined the game!");
+                    icc.PostMessage($"\n{userName} joined the game.");
 
                     if (userID == 0)
-                        GameField_RTB.AppendText("\nYou're the game host!");
+                        GameField_RTB.AppendText("\nYou're the game host.");
                     else
-                        GameField_RTB.AppendText($"\n{icc.GetHostName()} is the game host!");
+                        GameField_RTB.AppendText($"\n{icc.GetHostName()} is the game host.");
                 }
                 else
                 {
@@ -59,7 +59,7 @@ namespace CitiesChainClient
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
             icc.Leave(userName);
-            icc.PostMessage($"\n{userName} left the game!");
+            icc.PostMessage($"\n{userName} left the game.");
             Environment.Exit(0);
         }
 
@@ -81,22 +81,31 @@ namespace CitiesChainClient
 
                 if (comand == "/start" && userID == 0 && dontbreak == 9999)
                 {
-                    icc.PostMessage($"\n{userName}: {ChatTextField.Text}");
-                    ChatTextField.Text = "";
-                    dontbreak = 0;
-                    for (int i = 3; i > 0; i--)
+                    if (icc.GetPlayersCount() >= 2)
                     {
-                        icc.PostMessage($"\nThe game will start in {i}");
-                        await Task.Delay(1000);
+                        icc.PostMessage($"\n{userName}: {ChatTextField.Text}");
+                        ChatTextField.Text = "";
+                        dontbreak = 0;
+                        for (int i = 3; i > 0; i--)
+                        {
+                            icc.PostMessage($"\nThe game will start in {i}");
+                            await Task.Delay(1000);
+                        }
+                        GameField_RTB.Document.Blocks.Clear();
+                        icc.PostMessage("The game has started! Every message from now on will be treated as an answer.");
+                        return;
                     }
-                    GameField_RTB.Document.Blocks.Clear();
-                    icc.PostMessage("The game has started! Every message from now on will be treated as an answer.");
-                    return;
+                    else
+                    {
+                        ChatTextField.Text = "";
+                        GameField_RTB.AppendText("\nCan't start the game: not enough players.");
+                        return;
+                    }
                 }
 
                 if (comand == "/start" && userID != 0 && dontbreak == 9999)
                 {
-                    GameField_RTB.AppendText("\nOnly host can start the game!");
+                    GameField_RTB.AppendText("\nOnly host can start the game.");
                     ChatTextField.Text = "";
                     return;
                 }
