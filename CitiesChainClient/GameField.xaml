@@ -112,7 +112,7 @@
                             Grid.Row="1"
                             Orientation="Vertical"
                             Margin="0,35,0,0"/>
-                <TextBox x:Name="TimerTextField" HorizontalAlignment="Left" Margin="662,2,0,0" Grid.Row="1" TextWrapping="Wrap" Text="20:00" VerticalAlignment="Top" Width="120" Height="28" TextAlignment="Center" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="TimerTextField" HorizontalAlignment="Left" Margin="662,2,0,0" Grid.Row="1" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="120" Height="28" TextAlignment="Center" FontSize="20" IsReadOnly="True"/>
                 <RichTextBox x:Name="GameField_RTB" Grid.Row="1" Margin="10,35,10,71" IsReadOnly="True">
                     <FlowDocument>
                         <Paragraph>

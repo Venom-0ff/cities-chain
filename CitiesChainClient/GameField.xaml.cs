@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Timers;
 using System.Windows.Documents;
+using System.Windows.Threading;
 
 namespace CitiesChainClient
 {
@@ -17,12 +18,17 @@ namespace CitiesChainClient
     public partial class GameField : Window, ICallback
     {
         private ICitiesChain icc = null;
+        public DispatcherTimer timer;
+        public int timerValue = 20;
         public int userID;
         public string userName = "";
         private bool hosttrue = false;
         public GameField(Player player)
         {
             InitializeComponent();
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += Timer_Tick;
 
             try
             {
@@ -78,7 +84,7 @@ namespace CitiesChainClient
 
         private async void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e.Key == Key.Enter && userID == icc.GetCurrentPlayer())
             {
                 string command = ChatTextField.Text;
 
@@ -119,6 +125,11 @@ namespace CitiesChainClient
                         string temp = command.Last() + "";
                         icc.PostMessage($"\n{userID + " " + userName}'s answer '{command}' was accepted!\nNext player has to name a city that starts with '{temp.ToUpper()}'.");
                         ChatTextField.Text = "";
+                        icc.SetCurrentPlayer();
+                        if(userID >= icc.GetPlayersCount()-1)
+                        {
+                            icc.ResetPlayerTurn();
+                        }
                     }
                     else
                     {
@@ -134,9 +145,22 @@ namespace CitiesChainClient
             }
         }
 
-        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
-            
+            if (timerValue == 0)
+            {
+                timer.Stop();
+                TimerTextField.Text = "Time is over";
+                return;
+            }
+
+            timerValue--;
+            TimerTextField.Text = timerValue.ToString();
+        }
+
+        private void UpdateTimer(object sender, EventArgs e)
+        {
+            this.timerValue = 20;
         }
 
         // Implements the callback logic that will be triggered by a callback event in the service

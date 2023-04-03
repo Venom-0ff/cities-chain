@@ -38,6 +38,12 @@ namespace CitiesChainLibrary
         void SetDontBreak();
         [OperationContract]
         bool GetDontBreak();
+        [OperationContract]
+        int GetCurrentPlayer();
+        [OperationContract]
+        void SetCurrentPlayer();
+        [OperationContract]
+        void ResetPlayerTurn();
     }
 
     /// <summary>
@@ -51,6 +57,8 @@ namespace CitiesChainLibrary
         private string lastPlayedCity = "";
         private int Id = 0;
         private bool dontbreak = true;
+        private int currentPlayer = 0;
+
         /// <summary>
         /// Stores unique username and subscribes the user's client to the callbacks.
         /// </summary>
@@ -163,6 +171,31 @@ namespace CitiesChainLibrary
         public bool GetDontBreak()
         {
             return dontbreak;
+        }
+
+        /// <summary>
+        /// Returns the current player id.
+        /// </summary>
+        /// <returns></returns>
+        public int GetCurrentPlayer()
+        {
+            return currentPlayer;
+        }
+
+        /// <summary>
+        /// Increases the current player id.
+        /// </summary>
+        public void SetCurrentPlayer()
+        {
+            currentPlayer++;
+        }
+
+        /// <summary>
+        /// Resets the current player id.
+        /// </summary>
+        public void ResetPlayerTurn()
+        {
+            currentPlayer = 0;
         }
     }
 }
