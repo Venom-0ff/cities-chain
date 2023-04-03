@@ -32,6 +32,8 @@ namespace CitiesChainLibrary
         int GetPlayerId(Player player);
         [OperationContract]
         string GetHostName();
+        [OperationContract]
+        int GetPlayersCount();
     }
 
     /// <summary>
@@ -122,6 +124,15 @@ namespace CitiesChainLibrary
         public string GetHostName()
         {
             return players.Keys.First().Name;
+        }
+
+        /// <summary>
+        /// Returns the current number of connected players.
+        /// </summary>
+        /// <returns>Number of connected players.</returns>
+        public int GetPlayersCount()
+        {
+            return players.Count;
         }
 
         /// <summary>
