@@ -34,7 +34,7 @@ namespace CitiesChainClient
                 if (icc.Join(player))
                 {
                     userID = icc.GetPlayerId(player);
-                    icc.PostMessage($"\n{userID + " " + userName} joined the game.");
+                    icc.PostMessage($"\n{userName} joined the game.");
 
                     if (userID == 0)
                     {
@@ -60,7 +60,7 @@ namespace CitiesChainClient
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
             icc.Leave(userName);
-            icc.PostMessage($"\n{userID + " " + userName} left the game.");
+            icc.PostMessage($"\n{userName} left the game.");
             Environment.Exit(0);
         }
 
@@ -78,12 +78,26 @@ namespace CitiesChainClient
         {
             if (icc.isLoser(userID))
             {
-                MessageBox.Show("You are out of the game");
+                MessageBox.Show("You are out of the game!");
+                ChatTextField.Text = "";
                 return;
             }
+
+            if (!icc.GetDontBreak() && icc.GetPlayersCount() <= 1)
+            {
+                ChatTextField.Text = "";
+                MessageBox.Show("Congrats! You're the winner!\nThe game is over, you can close all windows now.");
+                return;
+            }
+
             if (e.Key == Key.Enter && userID == icc.GetCurrentPlayer())
             {
                 string command = ChatTextField.Text;
+
+                if (command != "/start" && hosttrue && icc.GetDontBreak())
+                {
+                    MessageBox.Show("Type \"\\start\" to start the game.");
+                }
 
                 if (command == "/start" && hosttrue && icc.GetDontBreak())
                 {
@@ -114,7 +128,6 @@ namespace CitiesChainClient
                 {
                     GameField_RTB.AppendText("\nOnly host can start the game.");
                     GameField_RTB.ScrollToEnd();
-                    GameField_RTB.ScrollToEnd();
                     ChatTextField.Text = "";
                     return;
                 }
@@ -124,7 +137,7 @@ namespace CitiesChainClient
                     if (icc.MakeATurn(command))
                     {
                         string temp = command.Last() + "";
-                        icc.PostMessage($"\n{userID + " " + userName}'s answer '{command}' was accepted!\nNext player has to name a city that starts with '{temp.ToUpper()}'.");
+                        icc.PostMessage($"\n{userName}'s answer '{command}' was accepted!\nNext player has to name a city that starts with '{temp.ToUpper()}'.");
                         GameField_RTB.ScrollToEnd();
                         ChatTextField.Text = "";
                         icc.SetCurrentPlayer();
@@ -135,16 +148,32 @@ namespace CitiesChainClient
                     }
                     else
                     {
-                        icc.PostMessage($"\n{userID + " " + userName}'s answer '{command}' was not accepted and they're out of the game!");
+                        icc.PostMessage($"\n{userName}'s answer '{command}' was not accepted and they're out of the game!");
                         GameField_RTB.ScrollToEnd();
                         ChatTextField.Text = "";
                         icc.GameOver(userID);
+
+                        if (icc.GetPlayersCount() <= 1)
+                        {
+                            icc.PostMessage($"\nCongrats {icc.GetWinner()}! You're the winner!");
+                            return;
+                        }
                     }
+                }
+                
+                return;
+            }
+
+            if (e.Key == Key.Enter && userID != icc.GetCurrentPlayer())
+            {
+                if (icc.GetDontBreak())
+                {
+                    MessageBox.Show("Wait for the host to start the game!");
+                    ChatTextField.Text = "";
                 }
                 else
                 {
-                    icc.PostMessage($"\n{userID + " " + userName}: {ChatTextField.Text}");
-                    GameField_RTB.ScrollToEnd();
+                    MessageBox.Show("It's not your turn yet!");
                     ChatTextField.Text = "";
                 }
             }
@@ -161,6 +190,7 @@ namespace CitiesChainClient
                 try
                 {
                     GameField_RTB.AppendText(message);
+                    GameField_RTB.ScrollToEnd();
                 }
                 catch (Exception ex)
                 {
