@@ -12,16 +12,16 @@ entering cities until all but one are eliminated.
 4. To start a new game, close all client windows and shut down the service, and then restart from step (1).
 
 				                                        Game Rules
-1.Only the host may use /start to begin a game.
-2.First player to enter will become the host.
-3.All cities must be entered with a capital letter.
-4.If a player enters an incorrect city or a city that does not start with
+1. Only the host may use /start to begin a game.
+2. First player to enter will become the host.
+3. All cities must be entered with a capital letter.
+4. If a player enters an incorrect city or a city that does not start with
 the last letter of the previous city, they are out.
-5.Once a player is out they are eliminated until a new game is started.
-6.Players may only type when it is their turn and will not be able to 
+5. Once a player is out they are eliminated until a new game is started.
+6. Players may only type when it is their turn and will not be able to 
 on others turns.
-7.Game continues until the last person is left.
-8.Have Fun!
+7. Game continues until the last person is left.
+8. Have Fun!
 
 				                                     Disclaimer
 Any deaths occuring or caused by playing this game are not our fault.
