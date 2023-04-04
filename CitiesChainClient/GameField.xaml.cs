@@ -1,4 +1,5 @@
-﻿using CitiesChainLibrary;
+﻿// Authors: Bhavin Patel, Kieran Primeau, Stanislav Kovalenko, Stepan Kostyukov (Group 2)
+using CitiesChainLibrary;
 using System;
 using System.Linq;
 using System.ServiceModel;
@@ -96,7 +97,8 @@ namespace CitiesChainClient
 
                 if (command != "/start" && hosttrue && icc.GetDontBreak())
                 {
-                    MessageBox.Show("Type \"\\start\" to start the game.");
+                    MessageBox.Show("Type \"/start\" to start the game.");
+                    ChatTextField.Text = "";
                 }
 
                 if (command == "/start" && hosttrue && icc.GetDontBreak())
@@ -141,7 +143,7 @@ namespace CitiesChainClient
                         GameField_RTB.ScrollToEnd();
                         ChatTextField.Text = "";
                         icc.SetCurrentPlayer();
-                        if(userID >= icc.GetPlayersCount()-1)
+                        if (userID >= icc.GetPlayersCount() - 1)
                         {
                             icc.ResetPlayerTurn();
                         }
@@ -152,6 +154,11 @@ namespace CitiesChainClient
                         GameField_RTB.ScrollToEnd();
                         ChatTextField.Text = "";
                         icc.GameOver(userID);
+                        icc.SetCurrentPlayer();
+                        if (userID >= icc.GetPlayersCount() - 1)
+                        {
+                            icc.ResetPlayerTurn();
+                        }
 
                         if (icc.GetPlayersCount() <= 1)
                         {

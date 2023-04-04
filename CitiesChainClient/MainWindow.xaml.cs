@@ -1,4 +1,5 @@
-﻿using CitiesChainLibrary;
+﻿// Authors: Bhavin Patel, Kieran Primeau, Stanislav Kovalenko, Stepan Kostyukov (Group 2)
+using CitiesChainLibrary;
 using System;
 using System.Windows;
 using System.Windows.Input;

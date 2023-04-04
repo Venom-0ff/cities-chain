@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿// Authors: Bhavin Patel, Kieran Primeau, Stanislav Kovalenko, Stepan Kostyukov (Group 2)
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;

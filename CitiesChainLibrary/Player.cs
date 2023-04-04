@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿// Authors: Bhavin Patel, Kieran Primeau, Stanislav Kovalenko, Stepan Kostyukov (Group 2)
+using System.Runtime.Serialization;
 
 namespace CitiesChainLibrary
 {

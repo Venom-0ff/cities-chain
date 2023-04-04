@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Authors: Bhavin Patel, Kieran Primeau, Stanislav Kovalenko, Stepan Kostyukov (Group 2)
+using System;
 using System.ServiceModel;
 using CitiesChainLibrary;
 
