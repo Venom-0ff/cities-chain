@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
+using System.Xml.Linq;
 
 namespace CitiesChainLibrary
 {
@@ -48,6 +49,8 @@ namespace CitiesChainLibrary
         void GameOver(int userID);
         [OperationContract]
         bool isLoser(int userID);
+        [OperationContract]
+        string GetWinner();
     }
 
     /// <summary>
@@ -211,6 +214,7 @@ namespace CitiesChainLibrary
         /// <param name="userId"></param>
         public void GameOver(int userId)
         {
+            players.Remove(players.Keys.First(key => key.PlayerId == userId));
             outplayers.Add(userId);
         }
 
@@ -225,6 +229,15 @@ namespace CitiesChainLibrary
                 return true;
             else
                 return false;
+        }
+
+        /// <summary>
+        /// Returns the name of the winner.
+        /// </summary>
+        /// <returns>Name of the winner.</returns>
+        public string GetWinner()
+        {
+            return players.Keys.First().Name;
         }
     }
 }
